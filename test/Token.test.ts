@@ -6,10 +6,9 @@ describe("Token - basic behavior", function () {
     async function deployFixture() {
         const [owner, user1, user2] = await ethers.getSigners();
 
-        const Token = await ethers.getContractFactory("MyStablecoin");
+        const Token = await ethers.getContractFactory("MyStableCoin");
         const token = await Token.deploy();
         await token.waitForDeployment();
-
         return { token, owner, user1, user2 };
     }
 
