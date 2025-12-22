@@ -1,6 +1,8 @@
 import { get } from "http";
 import { deployContract, getEthers } from "../helpers/deploy.js";
 import { TARGET_CONTRACT } from "../helpers/targets.js";
+import { expect } from "chai";
+
 
 
 describe("SecurityPlayground - negative/security tests", function () {
@@ -8,7 +10,8 @@ describe("SecurityPlayground - negative/security tests", function () {
     const ethers = await getEthers();
     const [admin, minter, user, attacker] = await ethers.getSigners();
 
-    const { contract: playground } = await deployContract(TARGET_CONTRACT, [admin.address]);
+    // fijo: siempre despliega SecurityPlayground
+    const { contract: playground } = await deployContract("SecurityPlayground", [admin.address]);
 
     const MINTER_ROLE = await playground.MINTER_ROLE();
     const PAUSER_ROLE = await playground.PAUSER_ROLE();
