@@ -32,4 +32,12 @@ describe("Token - basic behavior", function () {
         const { token } = await deployFixture();
         expect(await token.vault()).to.equal(ethers.ZeroAddress);
     });
+    it("should set vault successfully (Happy Path)", async function () {
+
+        const { token, owner, user1 } = await deployFixture();
+        // El test negativo ya prueba que no se puede setear 2 veces,
+        // pero tú necesitas validar que la primera vez SÍ funciona.
+        await token.connect(owner).setVault(user1.address);
+        expect(await token.vault()).to.equal(user1.address);
+    });
 });
