@@ -8,7 +8,7 @@ describe("Mint & Burn via Vault (happy path)", function () {
         const [owner, user1] = await ethers.getSigners();
 
         // Deploy mock USDC
-        const MockERC20 = await ethers.getContractFactory("MockERC20");
+        const MockERC20 = await ethers.getContractFactory("ERC20Mock");
         const usdc = await MockERC20.deploy("USD Coin", "USDC", 6);
         await usdc.waitForDeployment();
 
