@@ -29,7 +29,7 @@ contract StableCoinVault {
     //Mint calculado: 150 * 1_000_000 / 150 * 100 = 100_000_000 → 100 BOBH
     //Alice recibe 100 BOBH y Vault guarda 150 USDC
     function mintStable(uint256 collateralAmount) external {
-        uint256 mintAmount = collateralAmount * 1e6 / collateralization * 100;
+        uint256 mintAmount = collateralAmount * 100 / collateralization;
         require(collateralToken.transferFrom(msg.sender, address(this), collateralAmount), "Transfer failed");
         depositedCollateral[msg.sender] += collateralAmount;
         stableCoin.mint(msg.sender, mintAmount);
