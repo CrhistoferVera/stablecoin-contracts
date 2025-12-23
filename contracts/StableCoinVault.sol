@@ -28,8 +28,8 @@ contract StableCoinVault {
     //Alice deposita 150 USDC, colateralización = 150%
     //Mint calculado: 150 * 1_000_000 / 150 * 100 = 100_000_000 → 100 BOBH
     //Alice recibe 100 BOBH y Vault guarda 150 USDC
-    function mintStable(uint256 collateralAmount) external {
-        uint256 mintAmount = collateralAmount * 100 / collateralization;
+    function mintStable(uint256 collateralAmount) external {        //ver si conviene Usar ReentrancyGuard para Vulnerabilidad de Reentrancy
+        uint256 mintAmount = collateralAmount * 100 / collateralization;        //corregir la Incompatibilidad de Decimales 
         require(collateralToken.transferFrom(msg.sender, address(this), collateralAmount), "Transfer failed");
         depositedCollateral[msg.sender] += collateralAmount;
         stableCoin.mint(msg.sender, mintAmount);
@@ -41,8 +41,8 @@ contract StableCoinVault {
     //Vault sigue guardando el resto del colateral
     function redeemStable(uint256 tokenAmount) external {
         uint256 collateralReturn = tokenAmount * collateralization / 100;
-        stableCoin.burnFromVault(msg.sender, tokenAmount);
-        depositedCollateral[msg.sender] -= collateralReturn;
+        stableCoin.burnFromVault(msg.sender, tokenAmount);   
+        depositedCollateral[msg.sender] -= collateralReturn;        //corregir logica de colateral devuelto
         require(collateralToken.transfer(msg.sender, collateralReturn), "Transfer failed");
     }
 }

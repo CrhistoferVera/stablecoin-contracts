@@ -34,7 +34,7 @@ contract MyStableCoin is ERC20, ERC20Burnable {
     //Después de desplegar MyStableCoin, llamas setVault(addressDelVault).
     //Ahora solo addressDelVault puede mint/burn.
     function setVault(address _vault) external {
-        require(vault == address(0), "Vault already set");
+        require(vault == address(0), "Vault already set");      //agregar un owner para mayor seguridad
         vault = _vault;
     }
 }
