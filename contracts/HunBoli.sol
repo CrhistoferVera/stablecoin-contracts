@@ -12,26 +12,25 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant BLACKLIST_MANAGER_ROLE =
         keccak256("BLACKLIST_MANAGER_ROLE");
+
     // --- CONFIGURACIÓN ---
     uint256 public immutable MAX_SUPPLY;
+
     // --- ESTADO ---
     mapping(address => bool) public isBlacklisted;
     mapping(address => uint256) public pendingRedemptions;
-    // --- EVENTOS DE NEGOCIO (Dashboard) ---
+
+    // --- EVENTOS ---
     event RedemptionRequested(address indexed user, uint256 amount);
     event RedemptionFinalized(address indexed user, uint256 amount);
     event RedemptionRejected(address indexed user, uint256 amount);
     event Confiscated(address indexed user, uint256 amount);
 
-    // --- EVENTOS DE AUDITORÍA (Lo que te pidieron) ---
-    // Registra QUIÉN ejecutó la acción (minter/burner) y para QUIÉN (to/from)
+    // Eventos de Auditoría
     event Minted(address indexed minter, address indexed to, uint256 amount);
     event Burned(address indexed burner, address indexed from, uint256 amount);
-    // OpenZeppelin ya tiene Paused/Unpaused, pero agregamos estos para ser explícitos
     event SystemPaused(address indexed account);
     event SystemUnpaused(address indexed account);
-
-    // --- EVENTOS DE SEGURIDAD ---
     event AddedToBlacklist(address indexed account, address indexed by);
     event RemovedFromBlacklist(address indexed account, address indexed by);
 
@@ -47,19 +46,17 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         MAX_SUPPLY = maxSupply;
     }
 
-    // Usamos 6 decimales por requerimiento del cliente
+    // 6 Decimales (Requerimiento Cliente)
     function decimals() public pure override returns (uint8) {
         return 6;
     }
 
     // --- GESTIÓN DE LISTA NEGRA ---
-
     function addToBlacklist(
         address account
     ) external onlyRole(BLACKLIST_MANAGER_ROLE) {
         require(!isBlacklisted[account], "Account already blacklisted");
         isBlacklisted[account] = true;
-        // Agregamos msg.sender para saber QUÉ admin lo bloqueó
         emit AddedToBlacklist(account, msg.sender);
     }
 
@@ -71,7 +68,7 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         emit RemovedFromBlacklist(account, msg.sender);
     }
 
-    // --- HOOK DE SEGURIDAD (Override _update) ---
+    // --- HOOK DE SEGURIDAD (Aquí está el cambio de tu amigo) ---
     function _update(
         address from,
         address to,
@@ -81,7 +78,7 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
 
         // 1. Verificamos REMITENTE (from)
         if (from != address(0)) {
-            // Permitimos mover fondos de blacklist SOLO si es una acción administrativa
+            // Permitimos mover fondos DE una cuenta blacklist SOLO si es acción del sistema (Confiscar/Finalizar)
             bool isSystemAction = hasRole(BLACKLIST_MANAGER_ROLE, sender) ||
                 hasRole(BURNER_ROLE, sender);
 
@@ -90,25 +87,31 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
             }
         }
 
-        // 2. Verificamos DESTINATARIO (to)
+        // 2. Verificamos DESTINATARIO (to) - CORRECCIÓN APLICADA
         if (to != address(0)) {
-            require(!isBlacklisted[to], "Recipient is blacklisted");
+            // Tu amigo sugirió esto: Permitir recibir fondos SOLO si es una devolución del sistema
+            // (Es decir: lo hace un Admin Y el dinero viene del propio contrato)
+            bool isRefundAction = (hasRole(BURNER_ROLE, sender) ||
+                hasRole(BLACKLIST_MANAGER_ROLE, sender)) &&
+                from == address(this);
+
+            if (!isRefundAction) {
+                // Si NO es una devolución oficial, aplicamos la restricción normal
+                require(!isBlacklisted[to], "Recipient is blacklisted");
+            }
         }
 
         super._update(from, to, value);
     }
 
-    // --- MINTING (Con evento de auditoría) ---
-
+    // --- MINTING ---
     function mint(address to, uint256 amount) external onlyRole(MINTER_ROLE) {
         require(totalSupply() + amount <= MAX_SUPPLY, "Exceeds maximum supply");
         _mint(to, amount);
-        // AUDITORÍA: Registramos que msg.sender (el Admin) creó tokens
         emit Minted(msg.sender, to, amount);
     }
 
     // --- REDEMPTION FLOW ---
-
     function requestRedemption(uint256 amount) external {
         require(balanceOf(msg.sender) >= amount, "Saldo insuficiente");
         pendingRedemptions[msg.sender] += amount;
@@ -127,13 +130,13 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         );
 
         pendingRedemptions[user] -= amount;
-        _burn(address(this), amount); // Quema los tokens del contrato
+        _burn(address(this), amount);
 
         emit RedemptionFinalized(user, amount);
-        // AUDITORÍA: Registramos explícitamente la quema
         emit Burned(msg.sender, user, amount);
     }
 
+    // Esta es la función que fallaba y ahora funcionará
     function rejectRedemption(
         address user,
         uint256 amount
@@ -145,6 +148,8 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         );
 
         pendingRedemptions[user] -= amount;
+        // Ahora _transfer permitirá enviar al usuario aunque esté en blacklist
+        // porque `from` es `address(this)` y el sender tiene rol `BURNER_ROLE`
         _transfer(address(this), user, amount);
         emit RedemptionRejected(user, amount);
     }
@@ -169,14 +174,13 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         }
 
         emit Confiscated(user, total);
-        // AUDITORÍA: Registramos quién confiscó
         emit Burned(msg.sender, user, total);
     }
 
-    // --- PAUSA (Con eventos explícitos) ---
+    // --- PAUSA ---
     function pause() external onlyRole(PAUSER_ROLE) {
         _pause();
-        emit SystemPaused(msg.sender); // Evento extra para auditoría clara
+        emit SystemPaused(msg.sender);
     }
 
     function unpause() external onlyRole(PAUSER_ROLE) {
