@@ -24,7 +24,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
     event RedemptionRequested(address indexed user, uint256 amount);
     event RedemptionFinalized(address indexed user, uint256 amount);
     event RedemptionRejected(address indexed user, uint256 amount);
-    event RedemptionCancelled(address indexed user, uint256 amount);
     event Confiscated(address indexed user, uint256 amount);
 
     // Eventos de Auditoría
@@ -189,22 +188,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         pendingRedemptions[user] -= amount;
         _transfer(address(this), user, amount);
         emit RedemptionRejected(user, amount);
-    }
-
-    // MEJORA: Permitir al usuario cancelar su propia redemption
-    function cancelRedemption(uint256 amount) external {
-        require(
-            pendingRedemptions[msg.sender] >= amount,
-            "Insufficient pending redemption"
-        );
-        require(
-            balanceOf(address(this)) >= amount,
-            "No hay tokens en custodia"
-        );
-
-        pendingRedemptions[msg.sender] -= amount;
-        _transfer(address(this), msg.sender, amount);
-        emit RedemptionCancelled(msg.sender, amount);
     }
 
     // MEJORA #1: Confiscación segura con validaciones correctas
