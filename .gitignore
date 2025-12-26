@@ -18,3 +18,9 @@
 
 # Hardhat coverage reports
 /coverage
+
+# Foundry
+out/
+cache_forge/
+broadcast/
+lib/
