@@ -59,3 +59,24 @@ npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
 
 
 Esto subirá tu contrato a la testnet Sepolia y podrás interactuar con él desde cualquier wallet o aplicación que soporte Ethereum.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+# Stablecoin Contracts (Hardhat + Foundry)
+
+Este repositorio contiene:
+- Contratos Solidity (carpeta `contracts/`)
+- Tests en Hardhat (TypeScript) (carpeta `test/` / `test/security/`)
+- Tests de fuzzing e invariantes con Foundry (Solidity) (archivo `test/HUNBOLI.invariant.t.sol`)
+
+> Nota: Foundry usa `forge-std` como dependencia y está agregado como **git submodule**.
+
+---
+
+## Requisitos
+
+### 1) Node.js + npm
+- Recomendado: Node LTS
+- Verifica:
+```bash
+node -v
+npm -v
