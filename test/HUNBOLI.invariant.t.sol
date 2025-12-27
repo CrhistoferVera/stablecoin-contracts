@@ -42,7 +42,7 @@ contract HUNBOLIInvariantTest is StdInvariant, Test {
 
         bytes4[] memory selectors = new bytes4[](11);
         selectors[0] = handler.mint.selector;
-        selectors[1] = handler.mintBatch.selector; // NUEVO
+        selectors[1] = handler.mintBatch.selector; 
         selectors[2] = handler.transfer.selector;
         selectors[3] = handler.requestRedemption.selector;
         selectors[4] = handler.finalizeRedemption.selector;
@@ -50,8 +50,8 @@ contract HUNBOLIInvariantTest is StdInvariant, Test {
         selectors[6] = handler.addToBlacklist.selector;
         selectors[7] = handler.removeFromBlacklist.selector;
         selectors[8] = handler.confiscate.selector;
-        selectors[9] = handler.pauseSystem.selector;   // NUEVO
-        selectors[10] = handler.unpauseSystem.selector; // NUEVO
+        selectors[9] = handler.pauseSystem.selector;   
+        selectors[10] = handler.unpauseSystem.selector; 
 
         targetSelector(FuzzSelector({addr: address(handler), selectors: selectors}));
     }
@@ -112,6 +112,16 @@ contract HUNBOLIInvariantTest is StdInvariant, Test {
 
     // ============================================================
     // INVARIANTE 4: USUARIOS CONFISCADOS Y BLACKLISTED TIENEN 0
+    //
+    // 
+    // NOTA IMPORTANTE: wasConfiscated se resetea cuando el usuario es
+    // removido de blacklist, permitiéndole una "segunda oportunidad".
+    // Si el usuario es re-blacklisted después, wasConfiscated será false,
+    // por lo que este invariante NO aplica a tokens recibidos después
+    // de ser removido de blacklist.
+    // 
+    // El invariante verifica: "Si un usuario fue confiscado durante su
+    // ACTUAL periodo de blacklist, debe tener balance 0"
     // ============================================================
     function invariant_confiscated_blacklisted_users_have_zero() public view {
         address[] memory bl = handler.getBlacklistedUsers();
@@ -119,7 +129,8 @@ contract HUNBOLIInvariantTest is StdInvariant, Test {
         for (uint256 i = 0; i < bl.length; i++) {
             address u = bl[i];
 
-            // Solo verificar si fue confiscado Y actualmente está blacklisted
+            // wasConfiscated = true significa que fue confiscado en el
+            // periodo ACTUAL de blacklist (se resetea al remover de blacklist)
             if (handler.wasConfiscated(u) && coin.isBlacklisted(u)) {
                 assertEq(
                     coin.balanceOf(u), 
@@ -221,6 +232,8 @@ contract Handler is Test {
 
     mapping(address => bool) public isBlacklistedLocal;
     mapping(address => bool) public wasConfiscated;
+    mapping(address => uint256) public lastConfiscationBlock; 
+
 
     constructor(
         MyStableCoin _coin,
@@ -412,6 +425,10 @@ contract Handler is Test {
         vm.prank(blacklister);
         try coin.removeFromBlacklist(user) {
             isBlacklistedLocal[user] = false;
+            // NUEVO: Resetear confiscation flag cuando se remueve de blacklist
+            // El usuario obtiene una "segunda oportunidad"
+            wasConfiscated[user] = false;
+            lastConfiscationBlock[user] = 0;
         } catch {}
     }
 
@@ -436,6 +453,7 @@ contract Handler is Test {
             ghost_totalBurned += total;
             if (pending > 0) ghost_totalPendingRedemptions -= pending;
             wasConfiscated[user] = true;
+            lastConfiscationBlock[user] = block.number; // NUEVO: registrar cuando
         } catch {}
     }
 
@@ -474,5 +492,9 @@ contract Handler is Test {
 
     function getBlacklistedUsers() external view returns (address[] memory) {
         return blacklistedUsers;
+    }
+
+    function getLastConfiscationBlock(address user) external view returns (uint256) {
+        return lastConfiscationBlock[user];
     }
 }
