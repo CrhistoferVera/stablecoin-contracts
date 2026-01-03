@@ -24,3 +24,6 @@ out/
 cache_forge/
 broadcast/
 lib/
+
+# Environment variables
+/.env 

@@ -216,7 +216,7 @@ Logs:
   Bound result 2
   Bound result 8
   Bound result 3
-  Bound result 1
+  Bound result 14
   Bound result 0
   Bound result 0
   Bound result 10000
@@ -2809,15 +2809,19 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [26578] Handler::confiscate(1029725650906 [1.029e12])
-    ├─ [0] console::log("Bound result", 1) [staticcall]
+  [40419] Handler::confiscate(26953534649 [2.695e10])
+    ├─ [0] console::log("Bound result", 14) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eB) [staticcall]
     │   └─ ← [Return] true
-    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003e9) [staticcall]
+    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003eB) [staticcall]
+    │   └─ ← [Return] 533426907849 [5.334e11]
+    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003eB) [staticcall]
     │   └─ ← [Return] 0
-    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003e9) [staticcall]
-    │   └─ ← [Return] 0
+    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Return]
+    ├─ [8328] MyStableCoin::confiscate(0x00000000000000000000000000000000000003eB)
+    │   └─ ← [Revert] EnforcedPause()
     └─ ← [Stop]
 
   [8446] Handler::rejectRedemption(1000000 [1e6], 10)
@@ -5334,7 +5338,7 @@ Logs:
   Bound result 2
   Bound result 8
   Bound result 3
-  Bound result 15
+  Bound result 3
   Bound result 0
   Bound result 0
   Bound result 10000
@@ -5546,7 +5550,7 @@ Logs:
   Bound result 11
   Bound result 2
   Bound result 4
-  Bound result 7
+  Bound result 25
   Bound result 2
   Bound result 7
   Bound result 59465821303
@@ -8004,18 +8008,18 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [40791] Handler::confiscate(434054858119 [4.34e11])
-    ├─ [0] console::log("Bound result", 15) [staticcall]
+  [40791] Handler::confiscate(1029725650907 [1.029e12])
+    ├─ [0] console::log("Bound result", 3) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eB) [staticcall]
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
     │   └─ ← [Return] true
-    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003eB) [staticcall]
-    │   └─ ← [Return] 542970441032 [5.429e11]
-    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003eB) [staticcall]
+    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003Ed) [staticcall]
+    │   └─ ← [Return] 10431889384 [1.043e10]
+    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003Ed) [staticcall]
     │   └─ ← [Return] 0
     ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Return]
-    ├─ [8328] MyStableCoin::confiscate(0x00000000000000000000000000000000000003eB)
+    ├─ [8328] MyStableCoin::confiscate(0x00000000000000000000000000000000000003Ed)
     │   └─ ← [Revert] EnforcedPause()
     └─ ← [Stop]
 
@@ -10210,11 +10214,16 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [18757] Handler::removeFromBlacklist(34265537 [3.426e7])
-    ├─ [0] console::log("Bound result", 7) [staticcall]
+  [42355] Handler::removeFromBlacklist(719943916928 [7.199e11])
+    ├─ [0] console::log("Bound result", 25) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eB) [staticcall]
-    │   └─ ← [Return] false
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
+    │   └─ ← [Return] true
+    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Return]
+    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003F1)
+    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003F1, by: ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Stop]
     └─ ← [Stop]
 
   [42355] Handler::removeFromBlacklist(13820887858668 [1.382e13])
@@ -10798,7 +10807,7 @@ Logs:
   Bound result 3
   Bound result 8
   Bound result 2
-  Bound result 30130127110
+  Bound result 35490468708
   Bound result 4
   Bound result 0
   Bound result 2
@@ -14738,12 +14747,12 @@ Traces:
     │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [53964] Handler::mint(2, 30130127110 [3.013e10])
+  [53964] Handler::mint(2, 35490468708 [3.549e10])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
-    ├─ [0] console::log("Bound result", 30130127110 [3.013e10]) [staticcall]
+    ├─ [0] console::log("Bound result", 35490468708 [3.549e10]) [staticcall]
     │   └─ ← [Stop]
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
@@ -14753,9 +14762,9 @@ Traces:
     │   └─ ← [Return] false
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
-    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 30130127110 [3.013e10])
-    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 30130127110 [3.013e10])
-    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 30130127110 [3.013e10])
+    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 35490468708 [3.549e10])
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 35490468708 [3.549e10])
+    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 35490468708 [3.549e10])
     │   └─ ← [Stop]
     └─ ← [Stop]
 
@@ -14791,7 +14800,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -14836,7 +14845,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -14882,7 +14891,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
     ├─ [47190] MyStableCoin::mintBatch([0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003ee, 0x00000000000000000000000000000000000003Ed], [29202705 [2.92e7], 34304891841 [3.43e10], 43460082376 [4.346e10], 4027796430 [4.027e9]])
@@ -15193,7 +15202,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3971133565989 [3.971e12]
+    │   └─ ← [Return] 3976493907587 [3.976e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -19569,7 +19578,7 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [20499] Handler::rejectRedemption(2, 90069180338972693389112757618558927653902972904561427960504581976431032351309 [9.006e76])
+  [20499] Handler::rejectRedemption(2, 52097521010066535219550149160049530483058927711639349049358055053472280370456 [5.209e76])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
@@ -26019,7 +26028,7 @@ Logs:
   Bound result 4
   Bound result 0
   Bound result 6
-  Bound result 22
+  Bound result 13
   Bound result 6
   Bound result 999999990010
   Bound result 1
@@ -26068,7 +26077,7 @@ Logs:
   Bound result 3
   Bound result 8
   Bound result 2
-  Bound result 12232714040
+  Bound result 80397441029
   Bound result 4
   Bound result 0
   Bound result 2
@@ -28323,7 +28332,7 @@ Traces:
     │   └─ ← [Return] 0
     └─ ← [Stop]
 
-  [27339] Handler::mint(778220934329 [7.782e11], 11445 [1.144e4])
+  [27339] Handler::mint(697823493299 [6.978e11], 11445 [1.144e4])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 9) [staticcall]
@@ -28586,7 +28595,7 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [26578] Handler::confiscate(72307197114 [7.23e10])
+  [26578] Handler::confiscate(65692021743 [6.569e10])
     ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
@@ -29750,15 +29759,15 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [42355] Handler::removeFromBlacklist(2383525485550 [2.383e12])
-    ├─ [0] console::log("Bound result", 22) [staticcall]
+  [42355] Handler::removeFromBlacklist(80397441037 [8.039e10])
+    ├─ [0] console::log("Bound result", 13) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
     │   └─ ← [Return] true
     ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Return]
-    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003Ed)
-    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003Ed, by: ModExp: [0x0000000000000000000000000000000000000005])
+    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003F1)
+    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003F1, by: ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Stop]
     └─ ← [Stop]
 
@@ -29777,7 +29786,7 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [20499] Handler::rejectRedemption(1, 53949 [5.394e4])
+  [20499] Handler::rejectRedemption(1, 53948 [5.394e4])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 1) [staticcall]
@@ -29811,16 +29820,11 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [42355] Handler::removeFromBlacklist(29435578007185966519610784903311001620503628005 [2.943e46])
+  [18757] Handler::removeFromBlacklist(29435578007185966519610784903311001620503628005 [2.943e46])
     ├─ [0] console::log("Bound result", 13) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
-    │   └─ ← [Return] true
-    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
-    │   └─ ← [Return]
-    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003F1)
-    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003F1, by: ModExp: [0x0000000000000000000000000000000000000005])
-    │   └─ ← [Stop]
+    │   └─ ← [Return] false
     └─ ← [Stop]
 
   [18757] Handler::removeFromBlacklist(1559117772489643912735864835622547823171 [1.559e39])
@@ -29925,11 +29929,16 @@ Traces:
     │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [18757] Handler::removeFromBlacklist(1636073403429173404863859883078263 [1.636e33])
+  [42355] Handler::removeFromBlacklist(1636073403429173404863859883078263 [1.636e33])
     ├─ [0] console::log("Bound result", 7) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
-    │   └─ ← [Return] false
+    │   └─ ← [Return] true
+    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Return]
+    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003Ed)
+    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003Ed, by: ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Stop]
     └─ ← [Stop]
 
   [47955] Handler::removeFromBlacklist(38744376842199777437470492459765415809189779729 [3.874e46])
@@ -30026,7 +30035,7 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [20499] Handler::rejectRedemption(2, 2505231636150 [2.505e12])
+  [20499] Handler::rejectRedemption(2, 162838721786 [1.628e11])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
@@ -30153,12 +30162,12 @@ Traces:
     │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [26240] Handler::mint(2, 12232714040 [1.223e10])
+  [26240] Handler::mint(2, 80397441029 [8.039e10])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
-    ├─ [0] console::log("Bound result", 12232714040 [1.223e10]) [staticcall]
+    ├─ [0] console::log("Bound result", 80397441029 [8.039e10]) [staticcall]
     │   └─ ← [Stop]
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
@@ -31159,7 +31168,7 @@ Logs:
   Bound result 3
   Bound result 8
   Bound result 2
-  Bound result 30130127110
+  Bound result 35490468708
   Bound result 4
   Bound result 0
   Bound result 2
@@ -35099,12 +35108,12 @@ Traces:
     │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [53964] Handler::mint(2, 30130127110 [3.013e10])
+  [53964] Handler::mint(2, 35490468708 [3.549e10])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
-    ├─ [0] console::log("Bound result", 30130127110 [3.013e10]) [staticcall]
+    ├─ [0] console::log("Bound result", 35490468708 [3.549e10]) [staticcall]
     │   └─ ← [Stop]
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
@@ -35114,9 +35123,9 @@ Traces:
     │   └─ ← [Return] false
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
-    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 30130127110 [3.013e10])
-    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 30130127110 [3.013e10])
-    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 30130127110 [3.013e10])
+    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 35490468708 [3.549e10])
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 35490468708 [3.549e10])
+    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 35490468708 [3.549e10])
     │   └─ ← [Stop]
     └─ ← [Stop]
 
@@ -35152,7 +35161,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -35197,7 +35206,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -35243,7 +35252,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 3894671934235 [3.894e12]
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
     ├─ [47190] MyStableCoin::mintBatch([0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003ee, 0x00000000000000000000000000000000000003Ed], [29202705 [2.92e7], 34304891841 [3.43e10], 43460082376 [4.346e10], 4027796430 [4.027e9]])
@@ -35554,7 +35563,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3971133565989 [3.971e12]
+    │   └─ ← [Return] 3976493907587 [3.976e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -35736,7 +35745,7 @@ Traces:
 
   [7945] HUNBOLIInvariantTest::invariant_supply_never_negative()
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 1836153121261 [1.836e12]
+    │   └─ ← [Return] 1841513462859 [1.841e12]
     └─ ← [Stop]
 
 [PASS] invariant_totalSupply_never_exceeds_max() (runs: 10000, calls: 5000000, reverts: 0)
@@ -35957,7 +35966,7 @@ Logs:
   Bound result 2
   Bound result 8
   Bound result 3
-  Bound result 4
+  Bound result 5
   Bound result 0
   Bound result 0
   Bound result 10000
@@ -36100,7 +36109,7 @@ Logs:
   Bound result 3
   Bound result 8
   Bound result 2
-  Bound result 30130127110
+  Bound result 870728738096
   Bound result 4
   Bound result 0
   Bound result 2
@@ -36130,21 +36139,21 @@ Logs:
   Bound result 12
   Bound result 21
   Bound result 6
-  Bound result 19
+  Bound result 0
   Bound result 5
   Bound result 16
   Bound result 4
   Bound result 25
   Bound result 8
   Bound result 22454288744
-  Bound result 23
+  Bound result 25
   Bound result 2
   Bound result 8
-  Bound result 25
+  Bound result 2
   Bound result 20
   Bound result 7
   Bound result 18
-  Bound result 24
+  Bound result 21
   Bound result 9
   Bound result 4
   Bound result 7
@@ -36153,7 +36162,7 @@ Logs:
   Bound result 77640641502
   Bound result 5
   Bound result 0
-  Bound result 6
+  Bound result 5
   Bound result 2
 
 Traces:
@@ -38506,15 +38515,11 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [26578] Handler::confiscate(1352959780215 [1.352e12])
-    ├─ [0] console::log("Bound result", 4) [staticcall]
+  [18803] Handler::confiscate(1352959780216 [1.352e12])
+    ├─ [0] console::log("Bound result", 5) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eB) [staticcall]
-    │   └─ ← [Return] true
-    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003eB) [staticcall]
-    │   └─ ← [Return] 0
-    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003eB) [staticcall]
-    │   └─ ← [Return] 0
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F0) [staticcall]
+    │   └─ ← [Return] false
     └─ ← [Stop]
 
   [8446] Handler::rejectRedemption(1000000 [1e6], 10)
@@ -40044,12 +40049,12 @@ Traces:
     │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [53964] Handler::mint(2, 30130127110 [3.013e10])
+  [55435] Handler::mint(2, 86931525297999387765000895417225711772475479024621414697178631367228169145445 [8.693e76])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
-    ├─ [0] console::log("Bound result", 30130127110 [3.013e10]) [staticcall]
+    ├─ [0] console::log("Bound result", 870728738096 [8.707e11]) [staticcall]
     │   └─ ← [Stop]
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
@@ -40059,9 +40064,9 @@ Traces:
     │   └─ ← [Return] false
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
-    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 30130127110 [3.013e10])
-    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 30130127110 [3.013e10])
-    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 30130127110 [3.013e10])
+    ├─ [16521] MyStableCoin::mint(0x00000000000000000000000000000000000003eB, 870728738096 [8.707e11])
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: 0x00000000000000000000000000000000000003eB, value: 870728738096 [8.707e11])
+    │   ├─ emit Minted(minter: SHA-256: [0x0000000000000000000000000000000000000002], to: 0x00000000000000000000000000000000000003eB, amount: 870728738096 [8.707e11])
     │   └─ ← [Stop]
     └─ ← [Stop]
 
@@ -40097,7 +40102,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 4729910203623 [4.729e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40142,7 +40147,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 4729910203623 [4.729e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40188,7 +40193,7 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3889311592637 [3.889e12]
+    │   └─ ← [Return] 4729910203623 [4.729e12]
     ├─ [0] VM::prank(SHA-256: [0x0000000000000000000000000000000000000002])
     │   └─ ← [Return]
     ├─ [47190] MyStableCoin::mintBatch([0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003F0, 0x00000000000000000000000000000000000003ee, 0x00000000000000000000000000000000000003Ed], [29202705 [2.92e7], 34304891841 [3.43e10], 43460082376 [4.346e10], 4027796430 [4.027e9]])
@@ -40243,12 +40248,12 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [8571] Handler::transfer(11, 5, 4035)
+  [8571] Handler::transfer(11, 5, 4037)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [8446] Handler::rejectRedemption(14126 [1.412e4], 2)
+  [8446] Handler::rejectRedemption(14128 [1.412e4], 2)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40268,7 +40273,7 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [8448] Handler::requestRedemption(8068, 1666)
+  [8448] Handler::requestRedemption(8068, 1667)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40278,7 +40283,7 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [8448] Handler::requestRedemption(5, 6454722484179536504470005194244399498324754246679461787091905365329585314227 [6.454e75])
+  [8448] Handler::requestRedemption(5, 6294)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40345,11 +40350,15 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [18803] Handler::confiscate(11179 [1.117e4])
-    ├─ [0] console::log("Bound result", 19) [staticcall]
+  [26578] Handler::confiscate(11112 [1.111e4])
+    ├─ [0] console::log("Bound result", 0) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
-    │   └─ ← [Return] false
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eF) [staticcall]
+    │   └─ ← [Return] true
+    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003eF) [staticcall]
+    │   └─ ← [Return] 0
+    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003eF) [staticcall]
+    │   └─ ← [Return] 0
     └─ ← [Stop]
 
   [99338] Handler::addToBlacklist(93191453068004597228498635 [9.319e25])
@@ -40396,7 +40405,7 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [8571] Handler::transfer(2, 13726 [1.372e4], 19598 [1.959e4])
+  [8571] Handler::transfer(2, 13784 [1.378e4], 19598 [1.959e4])
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40448,7 +40457,7 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [8380] Handler::finalizeRedemption(10255 [1.025e4], 290)
+  [8380] Handler::finalizeRedemption(10254 [1.025e4], 292)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
@@ -40499,20 +40508,20 @@ Traces:
     ├─ [415] MyStableCoin::MAX_SUPPLY() [staticcall]
     │   └─ ← [Return] 1000000000000000000 [1e18]
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 3971133565989 [3.971e12]
+    │   └─ ← [Return] 4811732176975 [4.811e12]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003F1) [staticcall]
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [42355] Handler::removeFromBlacklist(11983 [1.198e4])
-    ├─ [0] console::log("Bound result", 23) [staticcall]
+  [41983] Handler::removeFromBlacklist(11985 [1.198e4])
+    ├─ [0] console::log("Bound result", 25) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eF) [staticcall]
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
     │   └─ ← [Return] true
     ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Return]
-    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003eF)
-    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003eF, by: ModExp: [0x0000000000000000000000000000000000000005])
+    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003Ed)
+    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003Ed, by: ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Stop]
     └─ ← [Stop]
 
@@ -40529,23 +40538,23 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [41983] Handler::removeFromBlacklist(89748586476075074633881535 [8.974e25])
-    ├─ [0] console::log("Bound result", 25) [staticcall]
+  [18757] Handler::removeFromBlacklist(5807710165134245285252703817315021530580321780248529482449516896202 [5.807e66])
+    ├─ [0] console::log("Bound result", 2) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003Ed) [staticcall]
-    │   └─ ← [Return] true
-    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
-    │   └─ ← [Return]
-    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003Ed)
-    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003Ed, by: ModExp: [0x0000000000000000000000000000000000000005])
-    │   └─ ← [Stop]
+    │   └─ ← [Return] false
     └─ ← [Stop]
 
-  [18757] Handler::removeFromBlacklist(13820887858668 [1.382e13])
+  [42355] Handler::removeFromBlacklist(13820887858668 [1.382e13])
     ├─ [0] console::log("Bound result", 20) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003eF) [staticcall]
-    │   └─ ← [Return] false
+    │   └─ ← [Return] true
+    ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Return]
+    ├─ [7901] MyStableCoin::removeFromBlacklist(0x00000000000000000000000000000000000003eF)
+    │   ├─ emit RemovedFromBlacklist(account: 0x00000000000000000000000000000000000003eF, by: ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Stop]
     └─ ← [Stop]
 
   [21904] Handler::finalizeRedemption(410998796256865390092130038101304116128999594194196857617 [4.109e56], 21760639892549918618128312161775372221199344441425467 [2.176e52])
@@ -40586,18 +40595,18 @@ Traces:
     │   └─ ← [Stop]
     └─ ← [Stop]
 
-  [40791] Handler::confiscate(14584 [1.458e4])
-    ├─ [0] console::log("Bound result", 24) [staticcall]
+  [40791] Handler::confiscate(14581 [1.458e4])
+    ├─ [0] console::log("Bound result", 21) [staticcall]
     │   └─ ← [Stop]
-    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003ee) [staticcall]
+    ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
-    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003ee) [staticcall]
-    │   └─ ← [Return] 1115767269496 [1.115e12]
-    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003ee) [staticcall]
+    ├─ [2940] MyStableCoin::balanceOf(0x00000000000000000000000000000000000003e9) [staticcall]
+    │   └─ ← [Return] 1553409547 [1.553e9]
+    ├─ [2846] MyStableCoin::pendingRedemptions(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] 0
     ├─ [0] VM::prank(ModExp: [0x0000000000000000000000000000000000000005])
     │   └─ ← [Return]
-    ├─ [8328] MyStableCoin::confiscate(0x00000000000000000000000000000000000003ee)
+    ├─ [8328] MyStableCoin::confiscate(0x00000000000000000000000000000000000003e9)
     │   └─ ← [Revert] EnforcedPause()
     └─ ← [Stop]
 
@@ -40656,12 +40665,12 @@ Traces:
     │   └─ ← [Return] true
     └─ ← [Stop]
 
-  [26045] Handler::transfer(0, 11046 [1.104e4], 4837)
+  [26045] Handler::transfer(0, 11045 [1.104e4], 4837)
     ├─ [2541] MyStableCoin::paused() [staticcall]
     │   └─ ← [Return] false
     ├─ [0] console::log("Bound result", 0) [staticcall]
     │   └─ ← [Stop]
-    ├─ [0] console::log("Bound result", 6) [staticcall]
+    ├─ [0] console::log("Bound result", 5) [staticcall]
     │   └─ ← [Stop]
     ├─ [2965] MyStableCoin::isBlacklisted(0x00000000000000000000000000000000000003e9) [staticcall]
     │   └─ ← [Return] true
@@ -40681,9 +40690,9 @@ Traces:
 
   [7995] HUNBOLIInvariantTest::invariant_totalSupply_never_exceeds_max()
     ├─ [2478] MyStableCoin::totalSupply() [staticcall]
-    │   └─ ← [Return] 1836153121261 [1.836e12]
+    │   └─ ← [Return] 2676751732247 [2.676e12]
     └─ ← [Stop]
 
-Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 1989.23s (10678.44s CPU time)
+Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 1881.99s (10188.11s CPU time)
 
-Ran 1 test suite in 1989.90s (1989.23s CPU time): 8 tests passed, 0 failed, 0 skipped (8 total tests)
+Ran 1 test suite in 1882.67s (1881.99s CPU time): 8 tests passed, 0 failed, 0 skipped (8 total tests)
