@@ -1,20 +1,31 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-contract MyStableCoin is ERC20, AccessControl, Pausable {
+/**
+ * @title MyStableCoin
+ * @notice Stablecoin HUNBOLI (BOBH) con patrón UUPS Proxy
+ * @dev Contrato upgradeable usando UUPS pattern
+ */
+contract MyStableCoin is 
+    Initializable,
+    ERC20Upgradeable, 
+    AccessControlUpgradeable, 
+    PausableUpgradeable,
+    UUPSUpgradeable 
+{
     // --- ROLES ---
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    bytes32 public constant BLACKLIST_MANAGER_ROLE =
-        keccak256("BLACKLIST_MANAGER_ROLE");
-
-    // --- CONFIGURACIÓN ---
-    uint256 public immutable MAX_SUPPLY;
+    bytes32 public constant BLACKLIST_MANAGER_ROLE = keccak256("BLACKLIST_MANAGER_ROLE");
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
     // --- ESTADO ---
     mapping(address => bool) public isBlacklisted;
@@ -38,20 +49,43 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         address indexed to,
         uint256 amount
     );
-    // MEJORA #2: Validaciones en constructor
-    constructor(
-        address adminAddress,
-        uint256 maxSupply
-    ) ERC20("HUNBOLI", "BOBH") {
-        require(adminAddress != address(0), "Admin address cannot be zero");
-        require(maxSupply > 0, "Max supply must be greater than zero");
+    event ContractUpgraded(address indexed newImplementation, address indexed upgrader);
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {
+        _disableInitializers();
+    }
+
+    /**
+     * @notice Inicializa el contrato (reemplaza al constructor)
+     * @param adminAddress Dirección del administrador principal
+     */
+    function initialize(address adminAddress) public initializer {
+        require(adminAddress != address(0), "Admin address cannot be zero");
+
+        // Inicializar contratos base
+        __ERC20_init("HUNBOLI", "BOBH");
+        __AccessControl_init();
+        __Pausable_init();
+        __UUPSUpgradeable_init();
+
+        // Asignar roles al administrador
         _grantRole(DEFAULT_ADMIN_ROLE, adminAddress);
         _grantRole(MINTER_ROLE, adminAddress);
         _grantRole(BURNER_ROLE, adminAddress);
         _grantRole(PAUSER_ROLE, adminAddress);
         _grantRole(BLACKLIST_MANAGER_ROLE, adminAddress);
-        MAX_SUPPLY = maxSupply;
+        _grantRole(UPGRADER_ROLE, adminAddress);
+    }
+
+    /**
+     * @notice Autoriza upgrades del contrato
+     * @dev Solo puede ser llamada por cuentas con UPGRADER_ROLE
+     */
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyRole(UPGRADER_ROLE) {
+        emit ContractUpgraded(newImplementation, msg.sender);
     }
 
     // 6 Decimales (Requerimiento Cliente)
@@ -76,10 +110,7 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         emit RemovedFromBlacklist(account, msg.sender);
     }
 
-    // MEJORA #4: Lógica de blacklist simplificada y clara
-    // Funciones helper para mejor legibilidad y auditabilidad
     function _isSystemActionFromBlacklisted() internal view returns (bool) {
-        // Permite mover fondos DE una cuenta blacklist solo si es acción del sistema
         address sender = _msgSender();
         return
             hasRole(BLACKLIST_MANAGER_ROLE, sender) ||
@@ -89,8 +120,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
     function _isSystemRefundToBlacklisted(
         address from
     ) internal view returns (bool) {
-        // Permite recibir fondos SOLO si es una devolución del sistema
-        // (lo hace un Admin Y el dinero viene del propio contrato)
         address sender = _msgSender();
         return
             (hasRole(BURNER_ROLE, sender) ||
@@ -121,28 +150,16 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
 
     // --- MINTING ---
     function mint(address to, uint256 amount) external onlyRole(MINTER_ROLE) {
-        require(totalSupply() + amount <= MAX_SUPPLY, "Exceeds maximum supply");
         _mint(to, amount);
         emit Minted(msg.sender, to, amount);
     }
 
-    // MEJORA: Mint en batch para ahorrar gas
     function mintBatch(
         address[] calldata recipients,
         uint256[] calldata amounts
     ) external onlyRole(MINTER_ROLE) {
         require(recipients.length == amounts.length, "Arrays length mismatch");
         require(recipients.length > 0, "Empty arrays");
-
-        uint256 totalAmount = 0;
-        for (uint256 i = 0; i < amounts.length; i++) {
-            totalAmount += amounts[i];
-        }
-
-        require(
-            totalSupply() + totalAmount <= MAX_SUPPLY,
-            "Exceeds maximum supply"
-        );
 
         for (uint256 i = 0; i < recipients.length; i++) {
             _mint(recipients[i], amounts[i]);
@@ -190,7 +207,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         emit RedemptionRejected(user, amount);
     }
 
-    // MEJORA #1: Confiscación segura con validaciones correctas
     function confiscate(
         address user
     ) external onlyRole(BLACKLIST_MANAGER_ROLE) {
@@ -200,9 +216,7 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         uint256 pendingAmount = pendingRedemptions[user];
         uint256 contractBalance = balanceOf(address(this));
 
-        // Confiscar fondos pendientes (solo si el contrato tiene suficientes tokens)
         if (pendingAmount > 0) {
-            // CRÍTICO: Verificar que el contrato tiene suficientes tokens antes de quemar
             require(
                 contractBalance >= pendingAmount,
                 "Contract has insufficient balance for pending redemptions"
@@ -212,7 +226,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
             _burn(address(this), pendingAmount);
         }
 
-        // Confiscar fondos en la wallet
         if (walletBalance > 0) {
             _burn(user, walletBalance);
         }
@@ -233,7 +246,6 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
         emit SystemUnpaused(msg.sender);
     }
 
-    // MEJORA: Recuperación de tokens ERC20 enviados por error
     function recoverERC20(
         address tokenAddress,
         address to,
@@ -252,4 +264,18 @@ contract MyStableCoin is ERC20, AccessControl, Pausable {
 
         emit TokensRecovered(tokenAddress, to, amount);
     }
+
+    /**
+     * @notice Obtiene la versión del contrato
+     * @return Número de versión
+     */
+    function version() public pure virtual returns (string memory) {
+        return "1.0.0";
+    }
+
+    /**
+     * @dev Reserva espacio en storage para futuras versiones del contrato.
+     * Esto previene colisiones de storage al agregar nuevas variables en upgrades.
+     */
+    uint256[48] private __gap;
 }
